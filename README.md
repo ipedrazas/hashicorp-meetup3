@@ -87,3 +87,26 @@ We can expire the vault token
         vault token-revoke e1df50b9-09b4-6629-13bf-691710962ef5
 
 And check that now we cannot access the data
+
+
+Let's go now and check why Kubernetes secrets are not ideal for keeping our secrets secret:
+
+        etcdctl -endpoints 172.17.4.51:2379 get /registry/secrets/default/vault
+
+Which is secure as long as nobody can access ETCD... which is not that secure.
+
+        {
+            "kind": "Secret",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "vault",
+                "namespace": "default",
+                "uid": "f82b2d05-1ab1-11e6-86a0-080027a75e9e",
+                "creationTimestamp": "2016-05-15T15:30:35Z"
+            },
+            "data": {
+                "token": "YzIwZTUyZWMtZTg4Yy1iNjIxLTc0NjktMDQwY2RiYjI1MGFlCg==",
+                "vault": "MTcyLjE3LjQuMjA6OTAwMAo="
+            },
+            "type": "Opaque"
+        }
