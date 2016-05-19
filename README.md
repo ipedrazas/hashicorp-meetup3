@@ -20,7 +20,7 @@ Let's check we can connect to vault
 
 Let's define the policy
 
-        vault policy-write demo vault-policy.json
+        vault policy-write demo [vault-policy.json](vault-helper/utils/vault-policy.json)
         vault token-create -policy=demo
 
 Now, let's write a test
