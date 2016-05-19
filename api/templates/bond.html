@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>Secret Message</title>
+        <style>
+                body{
+                    background-color: seashell;
+                    font-size: 25px;
+                }
+                .title{
+                    text-align: center;
+                    font-size: 65px;
+                }
+                .subtitle{
+                    text-align: center;
+                }
+                .options{
+                    list-style: none;
+                    margin-left: 400px;
+                }
+        </style>
+
+    </head>
+   <body>
+<div id="wrapper" style="text-align: center">
+    <div id="yourdiv" style="display: inline-block;">
+            <h1>Why hello, Mr. Bond!</h1>
+            <img src="{{ url_for('static', filename = 'bond.gif') }}" alt="">
+
+            <br>
+            <pre>
+                {{ data }}
+            </pre>
+</div>
+</div>
+   </body>
+</html>
