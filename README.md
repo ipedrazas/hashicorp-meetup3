@@ -66,6 +66,7 @@ Excellent, now we just deploy our `ReplicationController` that has 1 pod and 2 c
         # If the secret is in the cluster already
         kubectl replace -f vault-secrets.yaml
 
+        kubectl create -f api/meetup-svc.yaml
         kubectl create -f api/meetup-rc.yaml
 
 Let's test the application. First, we get the host where the pod is running:
