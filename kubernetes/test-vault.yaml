@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: vault
+  name: vault-client
+spec:
+  containers:
+  - name: vault-client
+    image: quay.io/ipedrazas/alpine:latest
+    command: ["bash", "-c", "count=0;while true; do echo hello Vault $count; (( count++ )) ; sleep 10; done"]
+    imagePullPolicy: IfNotPresent

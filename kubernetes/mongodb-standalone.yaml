@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    app: mongodb-standalone
+  name: mongodb-standalone
+spec:
+  replicas: 1
+  selector:
+    name: mongodb
+  template:
+    metadata:
+      labels:
+        name: mongodb
+        app: mongodb
+        appgroup: mongodb
+    spec:
+      containers:
+        - name: vault-sidekick
+          image: quay.io/ukhomeofficedigital/vault-sidekick:v0.0.4-rc1
+          resources:
+            limits:
+              memory: "100Mi"
+              cpu: "100m"
+          args:
+            - -logtostderr=true
+            - -v=4
+            - -tls-skip-verify=true
+            - -output=/ssl
+            - -cn=secret:secret/${dns_domain}/mongodb:fmt=txt,file=.credentials
+            - ${vault_sidekick_cn}
+          env:
+            - name: VAULT_ADDR
+              value: ${vault_host}
+            - name: VAULT_TOKEN
+              value: ${vault_token}
+          volumeMounts:
+             - name: secrets
+               mountPath: /ssl
+        - name: mongodb-standalone
+          image: docker.digital.homeoffice.gov.uk/sip-mongodb:${sip-mongodb-version}
+          resources:
+            limits:
+              memory: "400Mi"
+              cpu: "500m"
+          imagePullPolicy: Always
+          env:
+          - name: "VAULT_HOST"
+            value: ${vault_host}
+          - name: "VAULT_TOKEN"
+            value: ${vault_token}
+          - name: "SERVICE"
+            value: "mongodb-main"
+          - name: "SSL"
+            value: "yes"
+          - name: "MONGODB_DATABASE"
+            value: "mongoSession"
+          - name: "AUTH"
+            value: "yes"
+          volumeMounts:
+             - name: secrets
+               mountPath: /ssl
+          ports:
+          - containerPort: 27017
+            name: "http"
+          livenessProbe:
+            exec:
+              command:
+              - /app/check-ssl-expire.sh
+              - localhost:27017
+            initialDelaySeconds: 60
+            timeoutSeconds: 1
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: sipregistrykey
+      volumes:
+        - name: secrets
+          emptyDir: {}

@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  labels:
+    name: meetup
+  name: meetup
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: meetup
+    spec:
+      containers:
+      - name: meetup
+        image: ipedrazas/meetup:hashicorp
+        imagePullPolicy: Always
+        volumeMounts:
+             - name: credentials-from-vault
+               mountPath: /credentials
+      - name: vault-helper
+        image: ipedrazas/vault-helper:latest
+        imagePullPolicy: Always
+        volumeMounts:
+             - name: credentials-from-vault
+               mountPath: /credentials
+        env:
+          - name: KEY
+            value: demo/meetup
+          - name: VAULT_ADDR
+            valueFrom:
+              secretKeyRef:
+                name: vault
+                key: vault
+          - name: VAULT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: vault
+                key: token
+      volumes:
+        - name: credentials-from-vault
+          emptyDir: {}
+

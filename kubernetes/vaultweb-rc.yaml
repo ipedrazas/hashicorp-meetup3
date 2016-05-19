@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: vaultweb
+  labels:
+    name: vaultweb
+spec:
+  replicas: 1
+  selector:
+    name: vaultweb
+  template:
+    metadata:
+      labels:
+        name: vaultweb
+    spec:
+      containers:
+      - name: vaultweb
+        image: quay.io/ukhomeofficedigital/vaultweb:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 5000
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5000
+        env:
+          - name: VAULT_SERVER
+            value: https://vault.sip.notprod.homeoffice.gov.uk:8200/
+          - name: VAULT_TOKEN
+            value: be5f69fb-d549-db80-ce8b-f1b18b202413
+          - name: VERIFY
+            value: "False"
