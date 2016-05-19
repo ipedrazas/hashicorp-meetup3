@@ -1,0 +1,13 @@
+[Unit]
+Description=Install vault
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+TimeoutStartSec=300
+Environment="URL=https://releases.hashicorp.com/vault/0.5.2/vault_0.5.2_linux_amd64.zip"
+Environment="OUTPUT_FILE=/opt/bin/vault"
+Environment="TMP_FILE=/tmp/vault.zip"
+Environment="MD5SUM=7517b21d2c709e661914fbae1f6bf3622d9347b0fe9fc3334d78a01d1e1b4ec2"
+ExecStart=/usr/bin/mkdir -p /opt/bin
+ExecStart=/usr/bin/bash -c 'until [[ -x ${OUTPUT_FILE} ]] && [[ $(md5sum ${OUTPUT_FILE} | cut -f1 -d" ") == ${MD5SUM} ]]; do wget -q -O ${TMP_FILE} ${URL} && unzip -o ${TMP_FILE} -d /opt/bin && chmod a+x ${OUTPUT_FILE}; done'

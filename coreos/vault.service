@@ -1,0 +1,17 @@
+[Unit]
+Description=Vault
+Documentation=https://vaultproject.io/docs
+After=etcd2.service
+
+[Service]
+ProtectSystem=true
+ProtectHome=true
+RuntimeDirectory=vault
+RuntimeDirectoryMode=0700
+Environment="HOME=%t/vault"
+ExecStart=/opt/bin/vault server -dev -config=/etc/vault.hcl
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
