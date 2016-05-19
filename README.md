@@ -110,3 +110,5 @@ Which is secure as long as nobody can access ETCD... which is not that secure.
             },
             "type": "Opaque"
         }
+
+Slides can be found [here](https://docs.google.com/presentation/d/1poM8Z2Ak1RkkCFX-S3N8QIVe3tmXZo_3bQuHm0L4qV8/edit?usp=sharing)
